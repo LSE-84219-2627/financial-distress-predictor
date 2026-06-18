@@ -1,0 +1,43 @@
+# --- Raw data and database (regenerable — see Quickstart) ---
+data/raw/
+*.json
+*.db
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Streamlit local config ---
+.streamlit/
+
+# --- OS and editor noise ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Environment / secrets ---
+.env
+*.env
+
+# --- Claude Code internal files ---
+.claude/
+.agents/
+
+# --- Unrelated personal files (dissertation drafts, etc.) ---
+*.docx
+dissertation_draft_humanized.txt
+Dissertation*
