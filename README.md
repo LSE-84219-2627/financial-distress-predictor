@@ -20,8 +20,8 @@ This project builds a complete, auditable pipeline for corporate financial distr
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/yoeyjoey29/financial-distress-predictor.git
+cd financial-distress-predictor
 pip install -r requirements.txt
 
 # 2. Set your SEC User-Agent (required by SEC fair-use policy)
