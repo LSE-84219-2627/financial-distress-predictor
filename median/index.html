@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Median</title>
+<meta name="description" content="Median – guess the crowd's median answer. 5 questions a day, same for everyone.">
+<meta name="theme-color" content="#0f0f13">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c6af7;
+    --accent2: #f7c26a;
+    --text: #e8e8f0;
+    --muted: #7a7a9a;
+    --green: #4cca8a;
+    --yellow: #f7c26a;
+    --red: #f76a6a;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  body { display: flex; flex-direction: column; align-items: center; min-height: 100%; }
+
+  /* ── Header ── */
+  header {
+    width: 100%; max-width: 480px; padding: 18px 20px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .streak { font-size: 0.85rem; color: var(--accent2); font-weight: 700; }
+  .tab-bar {
+    width: 100%; max-width: 480px; display: flex;
+    border-bottom: 1px solid var(--border); padding: 0 20px;
+  }
+  .tab {
+    padding: 8px 16px 10px; font-size: 0.9rem; font-weight: 600;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    cursor: pointer; transition: color 0.2s, border-color 0.2s;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── Main content ── */
+  main {
+    width: 100%; max-width: 480px; flex: 1;
+    padding: 20px 20px 32px; display: flex; flex-direction: column; gap: 20px;
+  }
+
+  /* ── Progress dots ── */
+  .progress-row { display: flex; justify-content: center; gap: 8px; }
+  .prog-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border); transition: background 0.3s;
+  }
+  .prog-dot.done { background: var(--accent); }
+  .prog-dot.active { background: var(--accent2); }
+
+  /* ── Timer ── */
+  .timer-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 10px; font-size: 0.85rem; color: var(--muted);
+  }
+  .timer-bar-bg {
+    flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .timer-bar {
+    height: 100%; background: var(--accent2); border-radius: 2px;
+    transition: width 0.25s linear, background 0.3s;
+  }
+  .timer-num { min-width: 20px; text-align: right; font-weight: 700; color: var(--accent2); }
+
+  /* ── Question card ── */
+  .question-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .q-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+  .q-text { font-size: 1.15rem; font-weight: 700; line-height: 1.4; color: var(--text); }
+
+  /* ── Gauge ── */
+  .gauge-wrap { position: relative; width: 100%; padding-bottom: 55%; }
+  .gauge-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .gauge-labels {
+    display: flex; justify-content: space-between;
+    padding: 0 10px; margin-top: -4px;
+    font-size: 0.75rem; color: var(--muted);
+  }
+  .gauge-value {
+    text-align: center; font-size: 2.2rem; font-weight: 800;
+    color: var(--text); letter-spacing: -1px; margin: 8px 0 4px;
+    transition: color 0.2s;
+  }
+  .gauge-unit { text-align: center; font-size: 0.8rem; color: var(--muted); }
+
+  /* Needle drag area */
+  .gauge-drag {
+    position: absolute; inset: 0; cursor: grab; touch-action: none;
+  }
+  .gauge-drag:active { cursor: grabbing; }
+
+  /* ── Lock-in button ── */
+  .lock-btn {
+    width: 100%; padding: 16px; border-radius: var(--radius);
+    background: var(--accent); border: none; color: #fff;
+    font-size: 1rem; font-weight: 800; letter-spacing: 0.5px;
+    cursor: pointer; transition: transform 0.1s, background 0.2s;
+  }
+  .lock-btn:active { transform: scale(0.97); }
+  .lock-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
+
+  /* ── Reveal card ── */
+  .reveal-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .reveal-row { display: flex; justify-content: space-between; align-items: center; }
+  .reveal-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .reveal-val { font-size: 1.3rem; font-weight: 800; }
+  .reveal-pts { font-size: 1.5rem; font-weight: 800; color: var(--accent2); }
+  .off-by { font-size: 0.95rem; color: var(--muted); margin-top: 4px; }
+  .sep { width: 100%; height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* ── Next button ── */
+  .next-btn {
+    width: 100%; padding: 16px; border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--accent);
+    color: var(--accent); font-size: 1rem; font-weight: 800;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .next-btn:hover { background: rgba(124,106,247,0.15); }
+
+  /* ── End screen ── */
+  .end-score {
+    text-align: center; padding: 24px 0;
+  }
+  .end-num { font-size: 4rem; font-weight: 900; color: var(--accent); letter-spacing: -2px; }
+  .end-denom { font-size: 1.3rem; color: var(--muted); font-weight: 600; }
+  .end-cal { font-size: 1rem; color: var(--muted); margin-top: 4px; }
+
+  .breakdown { display: flex; flex-direction: column; gap: 10px; }
+  .bk-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .bk-q { font-size: 0.85rem; color: var(--muted); flex: 1; padding-right: 12px; line-height: 1.3; }
+  .bk-right { text-align: right; white-space: nowrap; }
+  .bk-pts { font-weight: 800; font-size: 1rem; }
+  .bk-emoji { font-size: 1.1rem; }
+
+  .share-btn {
+    width: 100%; padding: 16px; border-radius: var(--radius);
+    background: var(--accent2); border: none; color: #0f0f13;
+    font-size: 1rem; font-weight: 800; cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .share-btn:active { transform: scale(0.97); }
+  .share-toast {
+    text-align: center; font-size: 0.85rem; color: var(--green);
+    height: 20px; transition: opacity 0.3s;
+  }
+
+  /* ── Yesterday tab ── */
+  .yest-title { font-size: 1rem; font-weight: 700; color: var(--muted); text-align: center; }
+  .yest-score { font-size: 2rem; font-weight: 800; color: var(--accent); text-align: center; }
+  .yest-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .yest-row-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .yest-q { font-size: 0.85rem; color: var(--muted); }
+  .yest-median { font-size: 0.9rem; font-weight: 700; }
+
+  /* ── Waiting screen ── */
+  .wait-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px 20px; text-align: center;
+  }
+  .wait-big { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+  .wait-sub { font-size: 0.9rem; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .wait-time { font-size: 1.1rem; font-weight: 700; color: var(--accent2); margin-top: 12px; }
+
+  /* ── Supabase config banner ── */
+  .config-banner {
+    background: rgba(247,198,106,0.1); border: 1px solid var(--accent2);
+    border-radius: 12px; padding: 14px 16px; font-size: 0.85rem; line-height: 1.5; color: var(--accent2);
+  }
+  .config-banner code { background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 4px; font-size: 0.8rem; }
+
+  /* Tick animation */
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+  .tick-animate { animation: fadeIn 0.25s ease-out forwards; }
+
+  /* Bounce */
+  @keyframes bounce {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.06); }
+    65% { transform: scale(0.96); }
+    100% { transform: scale(1); }
+  }
+  .bounce { animation: bounce 0.35s ease-out; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Me<span>d</span>ian</div>
+  <div class="header-right">
+    <div class="streak" id="streakLabel"></div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab active" id="tabToday" onclick="showTab('today')">Today</button>
+  <button class="tab" id="tabYesterday" onclick="showTab('yesterday')">Yesterday</button>
+</div>
+
+<main id="mainArea"></main>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG – replace with your Supabase project values
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const LAUNCH_DATE = '2025-01-01'; // puzzle #1
+const SEED_ENABLED = true;        // set false to disable fake seed answers
+const SEED_COUNT = 40;
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+
+function ukDateStr(offset = 0) {
+  const d = new Date(new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }));
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+}
+
+function puzzleNumber(day) {
+  const ms = new Date(day) - new Date(LAUNCH_DATE);
+  return Math.max(1, Math.floor(ms / 86400000) + 1);
+}
+
+// Mulberry32 deterministic PRNG
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function strHash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+// Box-Muller normal sample
+function normalSample(rand, mean, sd, skew) {
+  let u = 0, v = 0;
+  while (u === 0) u = rand();
+  while (v === 0) v = rand();
+  const n = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  const skewed = n + skew * (n * n - 1) * 0.3;
+  return mean + sd * skewed;
+}
+
+function roundToStep(v, step) {
+  return Math.round(v / step) * step;
+}
+
+function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+function weightedMedian(values, weights) {
+  if (!values.length) return null;
+  const pairs = values.map((v, i) => ({ v, w: weights[i] }));
+  pairs.sort((a, b) => a.v - b.v);
+  const totalW = pairs.reduce((s, p) => s + p.w, 0);
+  let cum = 0;
+  for (const p of pairs) {
+    cum += p.w;
+    if (cum >= totalW / 2) return p.v;
+  }
+  return pairs[pairs.length - 1].v;
+}
+
+function computeMedian(realAnswers, seedAnswers, q) {
+  const realCount = realAnswers.length;
+  const seedWeight = SEED_ENABLED ? Math.max(0, 1 - realCount / SEED_COUNT) : 0;
+  const all = [], weights = [];
+  for (const v of realAnswers) { all.push(v); weights.push(1); }
+  for (const v of seedAnswers) { all.push(v); weights.push(seedWeight); }
+  return weightedMedian(all, weights);
+}
+
+function generateSeedAnswers(q, day, qi) {
+  if (!SEED_ENABLED) return [];
+  const rand = mulberry32(strHash(day + '|' + qi));
+  const { median, spread, skew } = q.seed;
+  const answers = [];
+  const jokeCount = Math.round(SEED_COUNT * 0.05);
+  for (let i = 0; i < SEED_COUNT - jokeCount; i++) {
+    const v = normalSample(rand, median, spread, skew);
+    answers.push(clamp(roundToStep(v, q.step), q.min, q.max));
+  }
+  for (let i = 0; i < jokeCount; i++) {
+    answers.push(rand() < 0.5 ? q.min : q.max);
+  }
+  return answers;
+}
+
+// Scoring: 100 at exact median, linear to 0 at 25% of range away
+function calcPoints(guess, med, q) {
+  const range = q.max - q.min;
+  const diff = Math.abs(guess - med);
+  const threshold = range * 0.25;
+  return Math.max(0, Math.round(100 * (1 - diff / threshold)));
+}
+
+// pts out of 100; 25% range = 0 pts
+// 2% range → 92 pts, 7% → 72 pts, 15% → 40 pts
+function scoreEmoji(pts) {
+  if (pts >= 92) return '🎯';
+  if (pts >= 72) return '🟢';
+  if (pts >= 40) return '🟡';
+  return '🔴';
+}
+
+// Device ID
+function getDeviceId() {
+  let id = localStorage.getItem('median_device_id');
+  if (!id) {
+    id = 'dev_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem('median_device_id', id);
+  }
+  return id;
+}
+
+// Storage helpers
+function getTodayState(day) {
+  try {
+    const raw = localStorage.getItem('median_day_' + day);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+function saveTodayState(day, state) {
+  try { localStorage.setItem('median_day_' + day, JSON.stringify(state)); } catch {}
+}
+
+function getStreak() {
+  return parseInt(localStorage.getItem('median_streak') || '0', 10);
+}
+function setStreak(n) { localStorage.setItem('median_streak', n); }
+
+// ═══════════════════════════════════════════════════════
+// SUPABASE CLIENT (minimal fetch-based)
+// ═══════════════════════════════════════════════════════
+
+const supabase = {
+  async query(sql) {
+    if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') return { data: [], error: 'not configured' };
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: sql })
+    });
+    if (!r.ok) return { data: null, error: await r.text() };
+    return { data: await r.json() };
+  },
+  async getAnswers(day, qi) {
+    if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') return [];
+    try {
+      const url = `${SUPABASE_URL}/rest/v1/answers?day=eq.${day}&question_index=eq.${qi}&is_seed=eq.false&select=value`;
+      const r = await fetch(url, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+      });
+      if (!r.ok) return [];
+      const rows = await r.json();
+      return rows.map(x => parseFloat(x.value));
+    } catch { return []; }
+  },
+  async insertAnswer(day, qi, value, deviceId) {
+    if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') return false;
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/answers`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          day, question_index: qi, value, device_id: deviceId, is_seed: false
+        })
+      });
+      return r.ok || r.status === 409; // 409 = already answered, fine
+    } catch { return false; }
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// QUESTIONS
+// ═══════════════════════════════════════════════════════
+
+let QUESTIONS = null;
+
+async function loadQuestions() {
+  if (QUESTIONS) return QUESTIONS;
+  const r = await fetch('./questions.json');
+  QUESTIONS = await r.json();
+  return QUESTIONS;
+}
+
+function getTodayQs(all, day) {
+  const seed = strHash(day);
+  const rand = mulberry32(seed);
+  const pool = [...all];
+  // Fisher-Yates shuffle with PRNG
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 5);
+}
+
+// ═══════════════════════════════════════════════════════
+// SVG GAUGE
+// ═══════════════════════════════════════════════════════
+
+function valToAngle(v, min, max) {
+  // -180° to 0° maps to min...max (left to right semicircle)
+  const t = (v - min) / (max - min);
+  return -Math.PI + t * Math.PI;
+}
+
+function polarToXY(cx, cy, r, angle) {
+  return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+}
+
+function buildGaugeSVG(q, currentVal, revealData) {
+  const W = 300, H = 165, cx = 150, cy = 155, R = 130, innerR = 85;
+  // Arc path: from -PI to 0 (left to right)
+  const start = polarToXY(cx, cy, R, -Math.PI);
+  const end = polarToXY(cx, cy, R, 0);
+  const startI = polarToXY(cx, cy, innerR, -Math.PI);
+  const endI = polarToXY(cx, cy, innerR, 0);
+
+  let svg = `<svg class="gauge-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Background arc
+  svg += `<path d="M${start.x},${start.y} A${R},${R} 0 0,1 ${end.x},${end.y} L${endI.x},${endI.y} A${innerR},${innerR} 0 0,0 ${startI.x},${startI.y} Z"
+    fill="none" stroke="#2a2a3a" stroke-width="22" stroke-linecap="round"
+    fill-rule="evenodd"/>`;
+
+  // Filled arc up to current value
+  const fillAngle = valToAngle(currentVal, q.min, q.max);
+  const fillEnd = polarToXY(cx, cy, R, fillAngle);
+  const sweepLarge = fillAngle > -Math.PI / 2 ? 1 : 0; // only needed for > 90 deg
+  // Actually we need large-arc flag based on angle span
+  const spanRad = fillAngle - (-Math.PI);
+  const largeFill = spanRad > Math.PI ? 1 : 0;
+  svg += `<path d="M${start.x},${start.y} A${R},${R} 0 ${largeFill},1 ${fillEnd.x},${fillEnd.y}"
+    fill="none" stroke="#7c6af7" stroke-width="22" stroke-linecap="round" opacity="0.7"/>`;
+
+  // Reveal: other player ticks
+  if (revealData) {
+    const allTicks = revealData.allValues;
+    // draw faint ticks for each answer
+    allTicks.forEach((v, i) => {
+      const ang = valToAngle(v, q.min, q.max);
+      const outerP = polarToXY(cx, cy, R + 5, ang);
+      const innerP = polarToXY(cx, cy, innerR - 5, ang);
+      svg += `<line x1="${outerP.x}" y1="${outerP.y}" x2="${innerP.x}" y2="${innerP.y}"
+        stroke="#ffffff" stroke-width="1.5" opacity="0.18" class="tick-animate" style="animation-delay:${i * 15}ms"/>`;
+    });
+
+    // Bold median marker
+    const mAng = valToAngle(revealData.median, q.min, q.max);
+    const mOuter = polarToXY(cx, cy, R + 8, mAng);
+    const mInner = polarToXY(cx, cy, innerR - 8, mAng);
+    svg += `<line x1="${mOuter.x}" y1="${mOuter.y}" x2="${mInner.x}" y2="${mInner.y}"
+      stroke="#f7c26a" stroke-width="4" stroke-linecap="round" class="tick-animate"/>`;
+
+    // Median label
+    const mLabel = polarToXY(cx, cy, R + 22, mAng);
+    svg += `<text x="${mLabel.x}" y="${mLabel.y}" text-anchor="middle" dominant-baseline="middle"
+      font-size="10" font-weight="800" fill="#f7c26a" class="tick-animate">med</text>`;
+  }
+
+  // Needle
+  const nAngle = valToAngle(currentVal, q.min, q.max);
+  const nTip = polarToXY(cx, cy, R - 10, nAngle);
+  const nBack = polarToXY(cx, cy, innerR + 10, nAngle);
+
+  // Needle width via perpendicular
+  const perpAngle = nAngle + Math.PI / 2;
+  const nw = 4;
+  const p1 = { x: nBack.x + nw * Math.cos(perpAngle), y: nBack.y + nw * Math.sin(perpAngle) };
+  const p2 = { x: nBack.x - nw * Math.cos(perpAngle), y: nBack.y - nw * Math.sin(perpAngle) };
+
+  svg += `<polygon points="${nTip.x},${nTip.y} ${p1.x},${p1.y} ${p2.x},${p2.y}"
+    fill="${revealData ? '#7c6af7' : '#e8e8f0'}" id="needle"/>`;
+
+  // Centre hub
+  svg += `<circle cx="${cx}" cy="${cy}" r="8" fill="#1a1a24" stroke="#7c6af7" stroke-width="2"/>`;
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function formatVal(v, q) {
+  if (q.step < 1) return v.toFixed(1);
+  return v.toLocaleString('en-GB');
+}
+
+// ═══════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════
+
+let state = {
+  tab: 'today',
+  day: '',
+  puzzleNum: 1,
+  questions: [],
+  current: 0,         // question index 0-4
+  phase: 'playing',   // 'playing' | 'reveal' | 'done' | 'waiting'
+  answers: [],        // player's answers [val, ...]
+  medians: [],        // medians revealed so far
+  points: [],         // points per question
+  timerInterval: null,
+  timerLeft: 15,
+  gaugeVal: 50,       // current needle value
+  dragging: false,
+};
+
+// ═══════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════
+
+function render() {
+  const main = document.getElementById('mainArea');
+  const tab = state.tab;
+
+  if (tab === 'yesterday') {
+    renderYesterday(main);
+    return;
+  }
+
+  if (state.phase === 'waiting') {
+    renderWaiting(main);
+    return;
+  }
+  if (state.phase === 'done') {
+    renderEnd(main);
+    return;
+  }
+
+  const q = state.questions[state.current];
+  const isReveal = state.phase === 'reveal';
+  const revealData = isReveal ? state._revealData : null;
+
+  let html = '';
+
+  // Progress dots
+  html += `<div class="progress-row">`;
+  for (let i = 0; i < 5; i++) {
+    let cls = 'prog-dot';
+    if (i < state.current) cls += ' done';
+    else if (i === state.current) cls += ' active';
+    html += `<div class="${cls}"></div>`;
+  }
+  html += `</div>`;
+
+  // Timer (only when playing)
+  if (!isReveal) {
+    const pct = (state.timerLeft / 15) * 100;
+    const danger = state.timerLeft <= 5;
+    html += `<div class="timer-row">
+      <div class="timer-bar-bg"><div class="timer-bar" style="width:${pct}%;background:${danger ? '#f76a6a' : 'var(--accent2)'}"></div></div>
+      <div class="timer-num" style="color:${danger ? '#f76a6a' : 'var(--accent2)'}">${state.timerLeft}</div>
+    </div>`;
+  }
+
+  // Question card
+  html += `<div class="question-card">
+    <div class="q-label">Question ${state.current + 1} of 5 · Puzzle #${state.puzzleNum}</div>
+    <div class="q-text">${q.text}</div>
+  </div>`;
+
+  // Gauge
+  const revd = revealData ? revealData : null;
+  html += `<div class="gauge-wrap" id="gaugeWrap">
+    ${buildGaugeSVG(q, state.gaugeVal, revd)}
+    ${!isReveal ? `<div class="gauge-drag" id="gaugeDrag"></div>` : ''}
+  </div>
+  <div class="gauge-labels">
+    <span>${formatVal(q.min, q)} ${q.unit}</span>
+    <span>${formatVal(q.max, q)} ${q.unit}</span>
+  </div>
+  <div class="gauge-value" id="gaugeValDisplay">${formatVal(state.gaugeVal, q)}</div>
+  <div class="gauge-unit">${q.unit}</div>`;
+
+  // Reveal card or Lock-in button
+  if (isReveal && revealData) {
+    const pts = state.points[state.current];
+    const emo = scoreEmoji(pts);
+    html += `<div class="reveal-card">
+      <div class="reveal-row">
+        <div>
+          <div class="reveal-label">Your answer</div>
+          <div class="reveal-val">${formatVal(state.answers[state.current], q)} ${q.unit}</div>
+        </div>
+        <div>
+          <div class="reveal-label">Median</div>
+          <div class="reveal-val" style="color:var(--accent2)">${formatVal(revealData.median, q)} ${q.unit}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="reveal-label">Points</div>
+          <div class="reveal-pts">${emo} ${pts}</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="off-by">Off by ${formatVal(Math.abs(state.answers[state.current] - revealData.median), q)} ${q.unit} · ${revealData.playerCount} player${revealData.playerCount === 1 ? '' : 's'}</div>
+    </div>`;
+
+    const isLast = state.current === 4;
+    html += `<button class="next-btn" onclick="advanceQuestion()">${isLast ? 'See Results' : 'Next Question →'}</button>`;
+  } else {
+    html += `<button class="lock-btn" id="lockBtn" onclick="lockIn()">Lock In</button>`;
+  }
+
+  main.innerHTML = html;
+
+  // Attach drag handlers
+  if (!isReveal) {
+    attachDrag(q);
+  }
+}
+
+function renderWaiting(main) {
+  const tomorrow = ukDateStr(1);
+  main.innerHTML = `
+    <div class="wait-card">
+      <div class="wait-big">Done for today!</div>
+      <div class="wait-sub">You've played today's Median. Come back tomorrow for 5 new questions.</div>
+      <div class="wait-time">New puzzle: midnight UK time</div>
+    </div>
+    ${renderBreakdownHTML()}
+    <button class="share-btn" onclick="share()">Share Result</button>
+    <div class="share-toast" id="shareToast"></div>
+  `;
+}
+
+function renderEnd(main) {
+  const totalPts = state.points.reduce((a, b) => a + b, 0);
+  const cal = Math.round((totalPts / 500) * 100);
+  const emojis = state.points.map(scoreEmoji).join('');
+
+  main.innerHTML = `
+    <div class="end-score">
+      <div class="end-num">${totalPts}</div>
+      <div class="end-denom">/ 500</div>
+      <div class="end-cal">Calibration: ${cal}%</div>
+    </div>
+    ${renderBreakdownHTML()}
+    <button class="share-btn" onclick="share()">Share Result</button>
+    <div class="share-toast" id="shareToast"></div>
+  `;
+}
+
+function renderBreakdownHTML() {
+  if (!state.points.length) return '';
+  let html = `<div class="breakdown">`;
+  for (let i = 0; i < state.questions.length; i++) {
+    const pts = state.points[i] ?? '—';
+    const emo = typeof pts === 'number' ? scoreEmoji(pts) : '';
+    const med = state.medians[i] != null ? formatVal(state.medians[i], state.questions[i]) + ' ' + state.questions[i].unit : '…';
+    html += `<div class="bk-row">
+      <div class="bk-q">${state.questions[i].text}</div>
+      <div class="bk-right">
+        <div class="bk-emoji">${emo}</div>
+        <div class="bk-pts" style="color:${pts >= 90 ? 'var(--green)' : pts >= 60 ? 'var(--accent2)' : 'var(--red)'}">${pts}</div>
+        <div style="font-size:0.75rem;color:var(--muted)">med ${med}</div>
+      </div>
+    </div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+async function renderYesterday(main) {
+  const qs = await loadQuestions();
+  const yDay = ukDateStr(-1);
+  const yQs = getTodayQs(qs, yDay);
+  const yState = getTodayState(yDay);
+
+  let html = `<div class="yest-title">Yesterday · #${puzzleNumber(yDay)}</div>`;
+  if (yState && yState.points) {
+    const total = yState.points.reduce((a, b) => a + b, 0);
+    html += `<div class="yest-score">${total}/500</div>`;
+  }
+
+  html += `<div class="breakdown" style="margin-top:16px">`;
+  for (let i = 0; i < yQs.length; i++) {
+    const q = yQs[i];
+    const realAnswers = await supabase.getAnswers(yDay, i);
+    const seedAnswers = generateSeedAnswers(q, yDay, i);
+    const med = computeMedian(realAnswers, seedAnswers, q);
+    const playerAns = yState?.answers?.[i];
+    const pts = yState?.points?.[i] ?? (playerAns != null && med != null ? calcPoints(playerAns, med, q) : null);
+
+    html += `<div class="yest-row">
+      <div class="yest-row-top">
+        <div class="yest-q">${q.text}</div>
+        <div class="yest-median">${med != null ? formatVal(med, q) + ' ' + q.unit : '—'}</div>
+      </div>
+      ${playerAns != null ? `<div style="font-size:0.8rem;color:var(--muted)">Your answer: ${formatVal(playerAns, q)} ${q.unit} · ${pts != null ? scoreEmoji(pts) + ' ' + pts + ' pts' : ''}</div>` : '<div style="font-size:0.8rem;color:var(--muted)">Not played</div>'}
+    </div>`;
+  }
+  html += `</div>`;
+  main.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// DRAG / TOUCH
+// ═══════════════════════════════════════════════════════
+
+function attachDrag(q) {
+  const drag = document.getElementById('gaugeDrag');
+  if (!drag) return;
+
+  function getAngleFromEvent(e) {
+    const rect = drag.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height; // bottom centre = gauge pivot
+    // Angle from centre
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    return Math.atan2(dy, dx);
+  }
+
+  function angleToVal(ang) {
+    // -PI (left) = min, 0 (right) = max
+    // clamp to [-PI, 0]
+    const clamped = clamp(ang, -Math.PI, 0);
+    const t = (clamped + Math.PI) / Math.PI;
+    const raw = q.min + t * (q.max - q.min);
+    return clamp(roundToStep(raw, q.step), q.min, q.max);
+  }
+
+  function update(e) {
+    if (!state.dragging) return;
+    e.preventDefault();
+    const ang = getAngleFromEvent(e);
+    const v = angleToVal(ang);
+    state.gaugeVal = v;
+    // Update just the display parts without full re-render
+    const gaugeWrap = document.getElementById('gaugeWrap');
+    if (gaugeWrap) gaugeWrap.innerHTML = buildGaugeSVG(q, v, null) + `<div class="gauge-drag" id="gaugeDrag"></div>`;
+    const disp = document.getElementById('gaugeValDisplay');
+    if (disp) disp.textContent = formatVal(v, q);
+    attachDrag(q); // re-attach after innerHTML change
+  }
+
+  drag.addEventListener('mousedown', e => { state.dragging = true; update(e); });
+  drag.addEventListener('touchstart', e => { state.dragging = true; update(e); }, { passive: false });
+  window.addEventListener('mousemove', update, { passive: false });
+  window.addEventListener('touchmove', update, { passive: false });
+  window.addEventListener('mouseup', () => { state.dragging = false; });
+  window.addEventListener('touchend', () => { state.dragging = false; });
+}
+
+// ═══════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════
+
+function startTimer() {
+  clearInterval(state.timerInterval);
+  state.timerLeft = 15;
+  state.timerInterval = setInterval(() => {
+    state.timerLeft--;
+    if (state.timerLeft <= 0) {
+      clearInterval(state.timerInterval);
+      lockIn();
+    } else {
+      // Update just timer bar
+      const bar = document.querySelector('.timer-bar');
+      const num = document.querySelector('.timer-num');
+      const pct = (state.timerLeft / 15) * 100;
+      const danger = state.timerLeft <= 5;
+      if (bar) { bar.style.width = pct + '%'; bar.style.background = danger ? '#f76a6a' : 'var(--accent2)'; }
+      if (num) { num.textContent = state.timerLeft; num.style.color = danger ? '#f76a6a' : 'var(--accent2)'; }
+    }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════
+// GAME ACTIONS
+// ═══════════════════════════════════════════════════════
+
+async function lockIn() {
+  clearInterval(state.timerInterval);
+  const qi = state.current;
+  const q = state.questions[qi];
+  const val = state.gaugeVal;
+
+  // Save answer
+  state.answers[qi] = val;
+
+  // Post to Supabase
+  const deviceId = getDeviceId();
+  supabase.insertAnswer(state.day, qi, val, deviceId);
+
+  // Fetch real answers + compute median
+  const realAnswers = await supabase.getAnswers(state.day, qi);
+  // Include our answer optimistically if not yet in DB
+  const withOurs = realAnswers.includes(val) ? realAnswers : [...realAnswers, val];
+  const seedAnswers = generateSeedAnswers(q, state.day, qi);
+  const med = computeMedian(withOurs, seedAnswers, q);
+  const pts = calcPoints(val, med, q);
+
+  state.medians[qi] = med;
+  state.points[qi] = pts;
+
+  // Persist progress
+  const saved = {
+    day: state.day,
+    answers: state.answers,
+    medians: state.medians,
+    points: state.points,
+    done: false
+  };
+  saveTodayState(state.day, saved);
+
+  state.phase = 'reveal';
+  state._revealData = {
+    median: med,
+    allValues: [...withOurs.slice(0, 60), ...seedAnswers.slice(0, 20)],
+    playerCount: withOurs.length
+  };
+
+  // Bounce animation
+  setTimeout(() => {
+    const gw = document.getElementById('gaugeWrap');
+    if (gw) { gw.classList.remove('bounce'); void gw.offsetWidth; gw.classList.add('bounce'); }
+  }, 50);
+
+  render();
+}
+
+function advanceQuestion() {
+  if (state.current < 4) {
+    state.current++;
+    state.phase = 'playing';
+    state._revealData = null;
+    // Set gauge to midpoint
+    const q = state.questions[state.current];
+    state.gaugeVal = roundToStep(q.min + (q.max - q.min) / 2, q.step);
+    render();
+    startTimer();
+  } else {
+    // All done
+    state.phase = 'done';
+    const saved = getTodayState(state.day) || {};
+    saved.done = true;
+    saveTodayState(state.day, saved);
+
+    // Update streak
+    const yesterday = ukDateStr(-1);
+    const yState = getTodayState(yesterday);
+    const prevStreak = getStreak();
+    const newStreak = yState?.done ? prevStreak + 1 : 1;
+    setStreak(newStreak);
+    updateStreakLabel();
+    render();
+  }
+}
+
+function share() {
+  const totalPts = state.points.reduce((a, b) => a + b, 0);
+  const emojis = state.points.map(scoreEmoji).join('');
+  const text = `Median #${state.puzzleNum} ${emojis} ${totalPts}/500\nhttps://median.game`;
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('shareToast');
+    if (t) { t.textContent = 'Copied to clipboard!'; setTimeout(() => { t.textContent = ''; }, 2500); }
+  }).catch(() => {
+    const t = document.getElementById('shareToast');
+    if (t) t.textContent = text;
+  });
+}
+
+function showTab(tab) {
+  state.tab = tab;
+  document.getElementById('tabToday').classList.toggle('active', tab === 'today');
+  document.getElementById('tabYesterday').classList.toggle('active', tab === 'yesterday');
+  render();
+}
+
+function updateStreakLabel() {
+  const streak = getStreak();
+  const label = document.getElementById('streakLabel');
+  if (label && streak > 0) label.textContent = `🔥 ${streak}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+async function init() {
+  updateStreakLabel();
+  const all = await loadQuestions();
+  const day = ukDateStr();
+  const pNum = puzzleNumber(day);
+  const qs = getTodayQs(all, day);
+  const q0 = qs[0];
+
+  state.day = day;
+  state.puzzleNum = pNum;
+  state.questions = qs;
+
+  // Check if already played today
+  const saved = getTodayState(day);
+  if (saved && saved.done) {
+    state.phase = 'waiting';
+    state.answers = saved.answers || [];
+    state.medians = saved.medians || [];
+    state.points = saved.points || [];
+    render();
+    return;
+  }
+
+  // Restore partial progress
+  if (saved && saved.answers && saved.answers.length > 0) {
+    state.answers = saved.answers;
+    state.medians = saved.medians || [];
+    state.points = saved.points || [];
+    // current = number of fully answered questions (0-based index of next)
+    state.current = Math.min(state.answers.length, 4);
+  }
+
+  // Set gauge to midpoint of current question
+  const curQ = state.questions[state.current];
+  state.gaugeVal = roundToStep(curQ.min + (curQ.max - curQ.min) / 2, curQ.step);
+
+  // Supabase check
+  const notConfigured = !SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL';
+
+  render();
+
+  if (notConfigured) {
+    // Show config banner
+    const main = document.getElementById('mainArea');
+    const banner = document.createElement('div');
+    banner.className = 'config-banner';
+    banner.innerHTML = `<strong>⚠️ Supabase not configured</strong><br>
+      Playing in solo mode — your answers are saved locally but not shared with others.<br>
+      Set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> in <code>index.html</code> to enable multiplayer. See README.md.`;
+    main.prepend(banner);
+  }
+
+  startTimer();
+}
+
+init();
+</script>
+</body>
+</html>

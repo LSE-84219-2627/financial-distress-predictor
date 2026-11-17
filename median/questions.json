@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "text": "Fair price for a pint of lager in a London pub (£)",
+    "min": 2, "max": 12, "step": 0.5, "unit": "£",
+    "seed": { "median": 6.5, "spread": 1.2, "skew": 0.3 }
+  },
+  {
+    "id": 2,
+    "text": "Fair price for a pint of lager outside London (£)",
+    "min": 2, "max": 10, "step": 0.5, "unit": "£",
+    "seed": { "median": 4.5, "spread": 0.9, "skew": 0.2 }
+  },
+  {
+    "id": 3,
+    "text": "Pick a number between 0 and 100",
+    "min": 0, "max": 100, "step": 1, "unit": "",
+    "seed": { "median": 37, "spread": 25, "skew": 0.1 }
+  },
+  {
+    "id": 4,
+    "text": "How many hours a week do you spend on your phone?",
+    "min": 0, "max": 70, "step": 1, "unit": "hrs",
+    "seed": { "median": 24, "spread": 10, "skew": 0.5 }
+  },
+  {
+    "id": 5,
+    "text": "How old were you when you had your first kiss?",
+    "min": 5, "max": 30, "step": 1, "unit": "yrs",
+    "seed": { "median": 15, "spread": 3, "skew": 0.4 }
+  },
+  {
+    "id": 6,
+    "text": "How many countries have you visited?",
+    "min": 0, "max": 60, "step": 1, "unit": "",
+    "seed": { "median": 10, "spread": 7, "skew": 0.6 }
+  },
+  {
+    "id": 7,
+    "text": "Fair price for a large pizza delivery in the UK (£)",
+    "min": 5, "max": 30, "step": 1, "unit": "£",
+    "seed": { "median": 16, "spread": 4, "skew": 0.3 }
+  },
+  {
+    "id": 8,
+    "text": "What percentage of Brits own their home?",
+    "min": 0, "max": 100, "step": 1, "unit": "%",
+    "seed": { "median": 63, "spread": 15, "skew": -0.2 }
+  },
+  {
+    "id": 9,
+    "text": "How many steps do you walk in an average day?",
+    "min": 0, "max": 20000, "step": 500, "unit": "",
+    "seed": { "median": 6500, "spread": 3000, "skew": 0.3 }
+  },
+  {
+    "id": 10,
+    "text": "How many cups of tea/coffee do you drink per day?",
+    "min": 0, "max": 15, "step": 1, "unit": "",
+    "seed": { "median": 3, "spread": 2, "skew": 0.5 }
+  },
+  {
+    "id": 11,
+    "text": "Average UK annual salary (£000s)",
+    "min": 10, "max": 100, "step": 1, "unit": "k£",
+    "seed": { "median": 33, "spread": 10, "skew": 0.4 }
+  },
+  {
+    "id": 12,
+    "text": "How many hours of sleep do you get on a weeknight?",
+    "min": 3, "max": 12, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 7, "spread": 1, "skew": -0.1 }
+  },
+  {
+    "id": 13,
+    "text": "How much would you pay monthly for a gym membership (£)?",
+    "min": 5, "max": 100, "step": 5, "unit": "£",
+    "seed": { "median": 35, "spread": 15, "skew": 0.3 }
+  },
+  {
+    "id": 14,
+    "text": "What percentage of adults in the UK drink alcohol?",
+    "min": 0, "max": 100, "step": 1, "unit": "%",
+    "seed": { "median": 78, "spread": 12, "skew": -0.2 }
+  },
+  {
+    "id": 15,
+    "text": "How many books did you read last year?",
+    "min": 0, "max": 50, "step": 1, "unit": "",
+    "seed": { "median": 5, "spread": 5, "skew": 0.8 }
+  },
+  {
+    "id": 16,
+    "text": "What is the speed limit on a UK motorway (mph)?",
+    "min": 50, "max": 100, "step": 5, "unit": "mph",
+    "seed": { "median": 70, "spread": 5, "skew": 0 }
+  },
+  {
+    "id": 17,
+    "text": "How many hours a week do you watch TV / stream?",
+    "min": 0, "max": 60, "step": 1, "unit": "hrs",
+    "seed": { "median": 20, "spread": 10, "skew": 0.3 }
+  },
+  {
+    "id": 18,
+    "text": "What percentage of the UK population lives in England?",
+    "min": 50, "max": 100, "step": 1, "unit": "%",
+    "seed": { "median": 84, "spread": 8, "skew": -0.3 }
+  },
+  {
+    "id": 19,
+    "text": "How much do you spend on a weekly food shop for one person (£)?",
+    "min": 10, "max": 150, "step": 5, "unit": "£",
+    "seed": { "median": 50, "spread": 20, "skew": 0.4 }
+  },
+  {
+    "id": 20,
+    "text": "How many languages do you speak (even a little)?",
+    "min": 1, "max": 10, "step": 1, "unit": "",
+    "seed": { "median": 2, "spread": 1, "skew": 0.7 }
+  },
+  {
+    "id": 21,
+    "text": "What year did the UK join the EEC (predecessor to EU)?",
+    "min": 1950, "max": 1990, "step": 1, "unit": "",
+    "seed": { "median": 1973, "spread": 6, "skew": 0 }
+  },
+  {
+    "id": 22,
+    "text": "What percentage of UK electricity comes from renewables?",
+    "min": 0, "max": 100, "step": 1, "unit": "%",
+    "seed": { "median": 42, "spread": 18, "skew": 0.2 }
+  },
+  {
+    "id": 23,
+    "text": "How many inches of rain does London get per year?",
+    "min": 10, "max": 50, "step": 1, "unit": "in",
+    "seed": { "median": 24, "spread": 8, "skew": 0 }
+  },
+  {
+    "id": 24,
+    "text": "How many times a week do you eat out or get a takeaway?",
+    "min": 0, "max": 14, "step": 1, "unit": "x",
+    "seed": { "median": 2, "spread": 2, "skew": 0.6 }
+  },
+  {
+    "id": 25,
+    "text": "What percentage of Brits have a university degree?",
+    "min": 10, "max": 70, "step": 1, "unit": "%",
+    "seed": { "median": 42, "spread": 12, "skew": 0 }
+  },
+  {
+    "id": 26,
+    "text": "How much would you pay for a cinema ticket in London (£)?",
+    "min": 5, "max": 25, "step": 1, "unit": "£",
+    "seed": { "median": 15, "spread": 4, "skew": 0.2 }
+  },
+  {
+    "id": 27,
+    "text": "How many Christmas presents do you typically give?",
+    "min": 0, "max": 30, "step": 1, "unit": "",
+    "seed": { "median": 10, "spread": 5, "skew": 0.3 }
+  },
+  {
+    "id": 28,
+    "text": "What is the population of London (millions)?",
+    "min": 1, "max": 15, "step": 0.5, "unit": "M",
+    "seed": { "median": 9, "spread": 2, "skew": 0 }
+  },
+  {
+    "id": 29,
+    "text": "How much would you spend on a first date (£)?",
+    "min": 0, "max": 200, "step": 5, "unit": "£",
+    "seed": { "median": 50, "spread": 25, "skew": 0.4 }
+  },
+  {
+    "id": 30,
+    "text": "What percentage of Brits have never left the UK?",
+    "min": 0, "max": 60, "step": 1, "unit": "%",
+    "seed": { "median": 15, "spread": 10, "skew": 0.5 }
+  },
+  {
+    "id": 31,
+    "text": "How old is the average first-time homebuyer in the UK?",
+    "min": 20, "max": 50, "step": 1, "unit": "yrs",
+    "seed": { "median": 33, "spread": 4, "skew": 0.2 }
+  },
+  {
+    "id": 32,
+    "text": "How many hours per week do you exercise?",
+    "min": 0, "max": 20, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 3, "spread": 2.5, "skew": 0.6 }
+  },
+  {
+    "id": 33,
+    "text": "What percentage of the UK population is vegetarian or vegan?",
+    "min": 0, "max": 40, "step": 1, "unit": "%",
+    "seed": { "median": 12, "spread": 8, "skew": 0.4 }
+  },
+  {
+    "id": 34,
+    "text": "How much do you spend on a haircut (£)?",
+    "min": 0, "max": 100, "step": 5, "unit": "£",
+    "seed": { "median": 25, "spread": 18, "skew": 0.5 }
+  },
+  {
+    "id": 35,
+    "text": "What year did the first iPhone come out?",
+    "min": 2000, "max": 2015, "step": 1, "unit": "",
+    "seed": { "median": 2007, "spread": 2, "skew": 0 }
+  },
+  {
+    "id": 36,
+    "text": "How many hours a day do you spend on social media?",
+    "min": 0, "max": 10, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 2.5, "spread": 1.5, "skew": 0.5 }
+  },
+  {
+    "id": 37,
+    "text": "What is the average house price in the UK (£000s)?",
+    "min": 100, "max": 600, "step": 10, "unit": "k£",
+    "seed": { "median": 285, "spread": 60, "skew": 0.3 }
+  },
+  {
+    "id": 38,
+    "text": "How many people attend a typical Premier League match?",
+    "min": 10000, "max": 80000, "step": 1000, "unit": "",
+    "seed": { "median": 38000, "spread": 10000, "skew": 0.1 }
+  },
+  {
+    "id": 39,
+    "text": "What percentage of Brits voted Leave in the 2016 Brexit referendum?",
+    "min": 30, "max": 70, "step": 1, "unit": "%",
+    "seed": { "median": 52, "spread": 5, "skew": 0 }
+  },
+  {
+    "id": 40,
+    "text": "How much do you tip at a restaurant (% of bill)?",
+    "min": 0, "max": 30, "step": 1, "unit": "%",
+    "seed": { "median": 10, "spread": 5, "skew": 0.3 }
+  },
+  {
+    "id": 41,
+    "text": "How many apps do you have on your phone?",
+    "min": 5, "max": 150, "step": 5, "unit": "",
+    "seed": { "median": 40, "spread": 20, "skew": 0.4 }
+  },
+  {
+    "id": 42,
+    "text": "How many times have you moved house in your life?",
+    "min": 0, "max": 20, "step": 1, "unit": "x",
+    "seed": { "median": 4, "spread": 3, "skew": 0.5 }
+  },
+  {
+    "id": 43,
+    "text": "What percentage of UK workers work from home at least once a week?",
+    "min": 5, "max": 70, "step": 1, "unit": "%",
+    "seed": { "median": 38, "spread": 12, "skew": 0 }
+  },
+  {
+    "id": 44,
+    "text": "What was the UK inflation rate at its 2022 peak (%)?",
+    "min": 1, "max": 20, "step": 0.5, "unit": "%",
+    "seed": { "median": 11, "spread": 3, "skew": 0 }
+  },
+  {
+    "id": 45,
+    "text": "How many different jobs have you had in your life?",
+    "min": 0, "max": 20, "step": 1, "unit": "",
+    "seed": { "median": 5, "spread": 3, "skew": 0.5 }
+  },
+  {
+    "id": 46,
+    "text": "What is the driving test pass rate in the UK (%)?",
+    "min": 20, "max": 80, "step": 1, "unit": "%",
+    "seed": { "median": 46, "spread": 10, "skew": 0 }
+  },
+  {
+    "id": 47,
+    "text": "How much does a monthly Tube/bus travelcard in London cost (£)?",
+    "min": 50, "max": 300, "step": 10, "unit": "£",
+    "seed": { "median": 155, "spread": 35, "skew": 0.2 }
+  },
+  {
+    "id": 48,
+    "text": "How many times a year do you get a cold or flu?",
+    "min": 0, "max": 10, "step": 1, "unit": "x",
+    "seed": { "median": 2, "spread": 1.5, "skew": 0.5 }
+  },
+  {
+    "id": 49,
+    "text": "What percentage of Brits own a car?",
+    "min": 40, "max": 90, "step": 1, "unit": "%",
+    "seed": { "median": 74, "spread": 10, "skew": -0.2 }
+  },
+  {
+    "id": 50,
+    "text": "How much would you spend on a birthday present for a close friend (£)?",
+    "min": 5, "max": 100, "step": 5, "unit": "£",
+    "seed": { "median": 30, "spread": 15, "skew": 0.3 }
+  },
+  {
+    "id": 51,
+    "text": "What is the average commute time to work in the UK (minutes)?",
+    "min": 0, "max": 120, "step": 5, "unit": "min",
+    "seed": { "median": 30, "spread": 15, "skew": 0.5 }
+  },
+  {
+    "id": 52,
+    "text": "What percentage of UK GDP is public spending?",
+    "min": 20, "max": 60, "step": 1, "unit": "%",
+    "seed": { "median": 44, "spread": 8, "skew": 0 }
+  },
+  {
+    "id": 53,
+    "text": "How many hours of TV did the average Brit watch per day in 2023?",
+    "min": 1, "max": 8, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 3.5, "spread": 1, "skew": 0.2 }
+  },
+  {
+    "id": 54,
+    "text": "How much of your monthly income do you save (%)?",
+    "min": 0, "max": 60, "step": 1, "unit": "%",
+    "seed": { "median": 10, "spread": 10, "skew": 0.6 }
+  },
+  {
+    "id": 55,
+    "text": "What is the age of consent in the UK?",
+    "min": 14, "max": 21, "step": 1, "unit": "yrs",
+    "seed": { "median": 16, "spread": 1, "skew": 0 }
+  },
+  {
+    "id": 56,
+    "text": "How many Michelin-starred restaurants are in the UK?",
+    "min": 10, "max": 300, "step": 10, "unit": "",
+    "seed": { "median": 170, "spread": 50, "skew": 0 }
+  },
+  {
+    "id": 57,
+    "text": "What percentage of adults in the UK are obese?",
+    "min": 10, "max": 50, "step": 1, "unit": "%",
+    "seed": { "median": 28, "spread": 8, "skew": 0 }
+  },
+  {
+    "id": 58,
+    "text": "What was the UK population in 2024 (millions)?",
+    "min": 50, "max": 80, "step": 1, "unit": "M",
+    "seed": { "median": 67, "spread": 4, "skew": 0 }
+  },
+  {
+    "id": 59,
+    "text": "How many hours a week do you spend cooking?",
+    "min": 0, "max": 20, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 5, "spread": 3, "skew": 0.4 }
+  },
+  {
+    "id": 60,
+    "text": "What percentage of Brits have a pet?",
+    "min": 20, "max": 70, "step": 1, "unit": "%",
+    "seed": { "median": 52, "spread": 10, "skew": -0.1 }
+  },
+  {
+    "id": 61,
+    "text": "How much does a first class stamp cost in the UK (pence)?",
+    "min": 50, "max": 200, "step": 1, "unit": "p",
+    "seed": { "median": 95, "spread": 20, "skew": 0.2 }
+  },
+  {
+    "id": 62,
+    "text": "What is the minimum wage for adults in the UK (£/hr)?",
+    "min": 5, "max": 15, "step": 0.5, "unit": "£/hr",
+    "seed": { "median": 11.5, "spread": 1.5, "skew": 0 }
+  },
+  {
+    "id": 63,
+    "text": "How many Premiership football teams are there?",
+    "min": 10, "max": 30, "step": 1, "unit": "",
+    "seed": { "median": 20, "spread": 2, "skew": 0 }
+  },
+  {
+    "id": 64,
+    "text": "How many times do Brits eat fish and chips per year on average?",
+    "min": 0, "max": 20, "step": 1, "unit": "x",
+    "seed": { "median": 6, "spread": 4, "skew": 0.6 }
+  },
+  {
+    "id": 65,
+    "text": "What percentage of Brits have never learned to swim?",
+    "min": 5, "max": 40, "step": 1, "unit": "%",
+    "seed": { "median": 18, "spread": 8, "skew": 0.3 }
+  },
+  {
+    "id": 66,
+    "text": "How much do you spend on a week's holiday in Europe (£, person)?",
+    "min": 200, "max": 2000, "step": 50, "unit": "£",
+    "seed": { "median": 800, "spread": 300, "skew": 0.5 }
+  },
+  {
+    "id": 67,
+    "text": "What percentage of UK cars are electric or hybrid?",
+    "min": 1, "max": 50, "step": 1, "unit": "%",
+    "seed": { "median": 20, "spread": 10, "skew": 0.3 }
+  },
+  {
+    "id": 68,
+    "text": "How much does the average UK mobile phone bill cost per month (£)?",
+    "min": 5, "max": 60, "step": 1, "unit": "£",
+    "seed": { "median": 22, "spread": 10, "skew": 0.4 }
+  },
+  {
+    "id": 69,
+    "text": "What is the average number of Facebook friends/connections a UK adult has?",
+    "min": 50, "max": 600, "step": 10, "unit": "",
+    "seed": { "median": 250, "spread": 100, "skew": 0.3 }
+  },
+  {
+    "id": 70,
+    "text": "How much does the average UK funeral cost (£)?",
+    "min": 1000, "max": 10000, "step": 500, "unit": "£",
+    "seed": { "median": 4000, "spread": 1500, "skew": 0.3 }
+  },
+  {
+    "id": 71,
+    "text": "What percentage of Brits say they are happy?",
+    "min": 30, "max": 90, "step": 1, "unit": "%",
+    "seed": { "median": 71, "spread": 10, "skew": -0.3 }
+  },
+  {
+    "id": 72,
+    "text": "How many hours of sunshine does London get per year?",
+    "min": 500, "max": 2000, "step": 50, "unit": "hrs",
+    "seed": { "median": 1450, "spread": 200, "skew": 0 }
+  },
+  {
+    "id": 73,
+    "text": "What is the tax-free personal allowance in the UK (£000s)?",
+    "min": 5, "max": 20, "step": 0.5, "unit": "k£",
+    "seed": { "median": 12.5, "spread": 2, "skew": 0 }
+  },
+  {
+    "id": 74,
+    "text": "How many pairs of shoes do you own?",
+    "min": 1, "max": 50, "step": 1, "unit": "",
+    "seed": { "median": 10, "spread": 7, "skew": 0.7 }
+  },
+  {
+    "id": 75,
+    "text": "What percentage of Brits do not have savings of at least £1000?",
+    "min": 10, "max": 60, "step": 1, "unit": "%",
+    "seed": { "median": 32, "spread": 10, "skew": 0 }
+  },
+  {
+    "id": 76,
+    "text": "How many hours a week does the average UK parent spend with their children?",
+    "min": 5, "max": 60, "step": 1, "unit": "hrs",
+    "seed": { "median": 24, "spread": 10, "skew": 0.3 }
+  },
+  {
+    "id": 77,
+    "text": "How many cups of tea does the average Brit drink per day?",
+    "min": 0, "max": 10, "step": 0.5, "unit": "",
+    "seed": { "median": 3, "spread": 1.5, "skew": 0.3 }
+  },
+  {
+    "id": 78,
+    "text": "What year was the NHS founded?",
+    "min": 1930, "max": 1960, "step": 1, "unit": "",
+    "seed": { "median": 1948, "spread": 4, "skew": 0 }
+  },
+  {
+    "id": 79,
+    "text": "How many hours a week do you spend commuting?",
+    "min": 0, "max": 20, "step": 0.5, "unit": "hrs",
+    "seed": { "median": 5, "spread": 4, "skew": 0.5 }
+  },
+  {
+    "id": 80,
+    "text": "What percentage of UK primary school children receive free school meals?",
+    "min": 5, "max": 50, "step": 1, "unit": "%",
+    "seed": { "median": 23, "spread": 8, "skew": 0.2 }
+  },
+  {
+    "id": 81,
+    "text": "How much do you spend on Christmas presents in total (£)?",
+    "min": 0, "max": 1000, "step": 25, "unit": "£",
+    "seed": { "median": 300, "spread": 150, "skew": 0.5 }
+  },
+  {
+    "id": 82,
+    "text": "What is the average speed of traffic in central London (mph)?",
+    "min": 3, "max": 20, "step": 1, "unit": "mph",
+    "seed": { "median": 8, "spread": 3, "skew": 0.3 }
+  },
+  {
+    "id": 83,
+    "text": "What percentage of Brits are satisfied with the NHS?",
+    "min": 10, "max": 80, "step": 1, "unit": "%",
+    "seed": { "median": 38, "spread": 15, "skew": 0 }
+  },
+  {
+    "id": 84,
+    "text": "How many glasses of water do you drink per day?",
+    "min": 0, "max": 15, "step": 1, "unit": "",
+    "seed": { "median": 5, "spread": 3, "skew": 0.3 }
+  },
+  {
+    "id": 85,
+    "text": "How much does a weekly rail season ticket from Brighton to London cost (£)?",
+    "min": 50, "max": 300, "step": 10, "unit": "£",
+    "seed": { "median": 170, "spread": 40, "skew": 0 }
+  },
+  {
+    "id": 86,
+    "text": "What percentage of Brits recycle regularly?",
+    "min": 30, "max": 90, "step": 1, "unit": "%",
+    "seed": { "median": 73, "spread": 10, "skew": -0.3 }
+  },
+  {
+    "id": 87,
+    "text": "How many push-ups can the average British adult do?",
+    "min": 0, "max": 60, "step": 1, "unit": "",
+    "seed": { "median": 15, "spread": 12, "skew": 0.5 }
+  },
+  {
+    "id": 88,
+    "text": "What is the average age of a first marriage in the UK?",
+    "min": 20, "max": 45, "step": 1, "unit": "yrs",
+    "seed": { "median": 32, "spread": 4, "skew": 0 }
+  },
+  {
+    "id": 89,
+    "text": "How much does a Greggs sausage roll cost (pence)?",
+    "min": 50, "max": 200, "step": 5, "unit": "p",
+    "seed": { "median": 115, "spread": 20, "skew": 0 }
+  },
+  {
+    "id": 90,
+    "text": "What percentage of UK workers are self-employed?",
+    "min": 5, "max": 30, "step": 1, "unit": "%",
+    "seed": { "median": 15, "spread": 5, "skew": 0.2 }
+  },
+  {
+    "id": 91,
+    "text": "How many penalty kicks are taken per Premier League season (approx)?",
+    "min": 50, "max": 300, "step": 10, "unit": "",
+    "seed": { "median": 120, "spread": 40, "skew": 0 }
+  },
+  {
+    "id": 92,
+    "text": "What is the highest mountain in the UK (metres)?",
+    "min": 500, "max": 1500, "step": 50, "unit": "m",
+    "seed": { "median": 1344, "spread": 150, "skew": 0 }
+  },
+  {
+    "id": 93,
+    "text": "How many hours a year does the average person spend in meetings?",
+    "min": 0, "max": 500, "step": 10, "unit": "hrs",
+    "seed": { "median": 150, "spread": 70, "skew": 0.4 }
+  },
+  {
+    "id": 94,
+    "text": "What percentage of UK flights are for leisure?",
+    "min": 30, "max": 90, "step": 1, "unit": "%",
+    "seed": { "median": 72, "spread": 10, "skew": -0.2 }
+  },
+  {
+    "id": 95,
+    "text": "How many songs are on your most-played playlist?",
+    "min": 5, "max": 200, "step": 5, "unit": "",
+    "seed": { "median": 40, "spread": 25, "skew": 0.5 }
+  },
+  {
+    "id": 96,
+    "text": "What percentage of the UK is covered by forests?",
+    "min": 5, "max": 50, "step": 1, "unit": "%",
+    "seed": { "median": 13, "spread": 8, "skew": 0.4 }
+  },
+  {
+    "id": 97,
+    "text": "How much does the cheapest new car cost in the UK (£000s)?",
+    "min": 5, "max": 25, "step": 0.5, "unit": "k£",
+    "seed": { "median": 12, "spread": 3, "skew": 0.3 }
+  },
+  {
+    "id": 98,
+    "text": "What year did Twitter (X) launch?",
+    "min": 2000, "max": 2015, "step": 1, "unit": "",
+    "seed": { "median": 2006, "spread": 2, "skew": 0 }
+  },
+  {
+    "id": 99,
+    "text": "How many times do you check your phone per day?",
+    "min": 10, "max": 200, "step": 5, "unit": "x",
+    "seed": { "median": 80, "spread": 30, "skew": 0.3 }
+  },
+  {
+    "id": 100,
+    "text": "What percentage of Brits trust politicians?",
+    "min": 0, "max": 50, "step": 1, "unit": "%",
+    "seed": { "median": 12, "spread": 8, "skew": 0.4 }
+  }
+]
