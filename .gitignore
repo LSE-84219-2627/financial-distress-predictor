@@ -1,6 +1,7 @@
 # --- Raw data and database (regenerable — see Quickstart) ---
 data/raw/
 *.json
+!median/questions.json
 *.db
 
 # --- Python cache ---

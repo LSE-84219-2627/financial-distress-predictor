@@ -20,11 +20,15 @@ create unique index if not exists answers_unique_real
 create index if not exists answers_day_qi
   on answers (day, question_index);
 
--- Row Level Security: anyone can insert (device_id is unguessable) and read
+-- Row Level Security
+-- SELECT and INSERT are open to anon; UPDATE and DELETE have no policy so they
+-- are denied by default (RLS denies anything without a matching policy).
 alter table answers enable row level security;
 
 create policy "public read" on answers
   for select using (true);
 
+-- Reject is_seed = true from clients; seed answers are generated client-side
+-- only and must never be written to the database.
 create policy "public insert" on answers
-  for insert with check (true);
+  for insert with check (is_seed = false);
