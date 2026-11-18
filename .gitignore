@@ -2,6 +2,8 @@
 data/raw/
 *.json
 !median/questions.json
+!zamzam/data/questions.json
+!zamzam/data/schedule.json
 *.db
 
 # --- Python cache ---

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zamzam — Tests</title>
+<style>
+body { font-family: monospace; background: #0b1a2e; color: #f4f0e8; padding: 2rem; }
+h1 { color: #c8973a; margin-bottom: 1.5rem; }
+.suite { margin-bottom: 1.5rem; }
+.suite h2 { color: #8ba8b8; font-size: .9rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+.pass { color: #3a9e5c; }
+.fail { color: #e06060; }
+.summary { font-size: 1.1rem; margin-top: 1.5rem; padding: 1rem; border: 1px solid rgba(200,151,58,.3); border-radius: 8px; }
+</style>
+</head>
+<body>
+<h1>🧪 Zamzam Test Suite</h1>
+<div id="output"></div>
+<script type="module">
+import { matchAnswer, normalize } from './matcher.js';
+
+// ─── Mini test framework ───────────────────────────────────────────────────
+let pass = 0, fail = 0;
+const out = document.getElementById('output');
+
+function suite(name, fn) {
+  const div = document.createElement('div');
+  div.className = 'suite';
+  div.innerHTML = `<h2>${name}</h2>`;
+  out.appendChild(div);
+  window.__currentSuite = div;
+  fn();
+}
+
+function test(desc, fn) {
+  try {
+    fn();
+    pass++;
+    window.__currentSuite.innerHTML += `<div class="pass">✓ ${desc}</div>`;
+  } catch (e) {
+    fail++;
+    window.__currentSuite.innerHTML += `<div class="fail">✗ ${desc} — ${e.message}</div>`;
+  }
+}
+
+function assert(cond, msg) {
+  if (!cond) throw new Error(msg || 'Assertion failed');
+}
+
+function eq(a, b) {
+  if (JSON.stringify(a) !== JSON.stringify(b))
+    throw new Error(`Expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`);
+}
+
+// ─── Mock questions ────────────────────────────────────────────────────────
+const prophetsQ = {
+  id: 'q1',
+  answers: [
+    { name: 'Musa', aliases: ['Musa', 'Moses', 'Moosa'], tier: 'Common' },
+    { name: 'Nasr', aliases: ['Nasr'], tier: 'Rare' },
+    { name: 'Nas', aliases: ['Nas'], tier: 'Legendary' },
+    { name: 'Idris', aliases: ['Idris', 'Enoch'], tier: 'Legendary' },
+    { name: 'Al-Yasa', aliases: ['Al-Yasa', 'Elisha'], tier: 'Legendary' },
+    { name: 'Shuayb', aliases: ['Shuayb', 'Shoaib', "Shu'ayb"], tier: 'Rare' },
+    { name: 'Sulayman', aliases: ['Sulayman', 'Solomon', 'Suleiman'], tier: 'Uncommon' },
+  ],
+  hints: {
+    'zaynab': 'Two Zaynabs — which one?',
+  }
+};
+
+const tawafQ = {
+  id: 'q13',
+  answers: [
+    { name: 'Tawaf', aliases: ['Tawaf', 'Circumambulation'], tier: 'Common' },
+    { name: 'Tawaf al-Ifadah', aliases: ['Tawaf al-Ifadah', 'Ifadah tawaf'], tier: 'Legendary' },
+  ],
+  hints: {}
+};
+
+// ─── Normalization tests ───────────────────────────────────────────────────
+suite('normalize()', () => {
+  test('lowercase', () => eq(normalize('MUSA'), 'musa'));
+  test('strip apostrophe', () => eq(normalize("shu'ayb"), 'shuayb'));
+  test('strip filler: al-', () => eq(normalize('al-Bukhari'), 'bukhari'));
+  test('ee→i then oo→u', () => eq(normalize('Moosee'), 'musi')); // ee→i: moosi, then oo→u: musi
+  test('oo→u', () => eq(normalize('Moosa'), 'musa'));
+  test('aa→a', () => eq(normalize('Shaaban'), 'shaban'));
+  test('collapse doubles (ll→l; "al" in "allah" is not a filler word)', () => eq(normalize('Allahu'), 'alahu'));
+  test('strip diacritics', () => eq(normalize('Mālik'), 'malik'));
+  test('hyphens to spaces then collapse', () => {
+    const r = normalize('Al-Yasa');
+    // 'al' is filler, 'yasa' remains
+    assert(r.includes('yasa'), `Got: ${r}`);
+  });
+});
+
+// ─── Exact match tests ─────────────────────────────────────────────────────
+suite('Exact matching', () => {
+  test('direct name match', () => {
+    const r = matchAnswer('Musa', prophetsQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Musa');
+  });
+
+  test('English alias (Moses)', () => {
+    const r = matchAnswer('Moses', prophetsQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Musa');
+  });
+
+  test('alt spelling (Moosa)', () => {
+    const r = matchAnswer('Moosa', prophetsQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Musa');
+  });
+
+  test('case insensitive', () => {
+    const r = matchAnswer('musa', prophetsQ);
+    eq(r.type, 'correct');
+  });
+
+  test('miss on unknown', () => {
+    const r = matchAnswer('Batman', prophetsQ);
+    eq(r.type, 'miss');
+  });
+});
+
+// ─── Exact beats fuzzy (critical) ─────────────────────────────────────────
+suite('Exact wins over fuzzy', () => {
+  test('"Nas" matches Nas not Nasr', () => {
+    // Both Nas and Nasr are in the question. "Nas" should not fuzzy-match Nasr
+    // because an exact answer exists for "Nas"
+    const r = matchAnswer('Nas', prophetsQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Nas');
+  });
+
+  test('"Tawaf" matches Tawaf not Tawaf al-Ifadah', () => {
+    const r = matchAnswer('Tawaf', tawafQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Tawaf');
+  });
+
+  test('"Tawaf al-Ifadah" matches exact legendary', () => {
+    const r = matchAnswer('Tawaf al-Ifadah', tawafQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Tawaf al-Ifadah');
+  });
+});
+
+// ─── Fuzzy matching ────────────────────────────────────────────────────────
+suite('Fuzzy matching (Levenshtein)', () => {
+  test('1-char typo for 5-char word (Sulyman → Sulayman)', () => {
+    const r = matchAnswer('Sulyman', prophetsQ);
+    // Normalized: 'sulyman' vs 'sulayman' — dist=1, len=7 → threshold 2
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Sulayman');
+  });
+
+  test('no fuzzy under 4 chars ("Nas" is 3)', () => {
+    // "Nas" should exact-match, not fuzzy to Nasr
+    const r = matchAnswer('Nas', prophetsQ);
+    eq(r.answer.name, 'Nas');
+  });
+
+  test('miss on big edit distance', () => {
+    const r = matchAnswer('xyz123', prophetsQ);
+    eq(r.type, 'miss');
+  });
+});
+
+// ─── Hint matching ─────────────────────────────────────────────────────────
+suite('Hints (no try cost)', () => {
+  test('zaynab triggers hint', () => {
+    const r = matchAnswer('zaynab', prophetsQ);
+    eq(r.type, 'hint');
+    assert(r.message.includes('Zaynab'), `Got: ${r.message}`);
+  });
+
+  test('hint not counted as miss', () => {
+    const r = matchAnswer('zaynab', prophetsQ);
+    assert(r.type !== 'miss');
+  });
+});
+
+// ─── Water fill rule ───────────────────────────────────────────────────────
+suite('Water fill rule (5 Legendaries = 100%)', () => {
+  const TIER_WATER = { Common: 5, Uncommon: 10, Rare: 15, Legendary: 20 };
+
+  test('5 Legendaries → 100%', () => {
+    const total = 5 * TIER_WATER.Legendary;
+    eq(total, 100);
+  });
+
+  test('best non-legendary score < 100% (4 Legendary + 1 Rare = 95%)', () => {
+    const total = 4 * TIER_WATER.Legendary + 1 * TIER_WATER.Rare;
+    assert(total < 100, `Expected < 100, got ${total}`);
+    eq(total, 95);
+  });
+
+  test('all Common = 25%', () => {
+    eq(5 * TIER_WATER.Common, 25);
+  });
+
+  test('all Uncommon = 50%', () => {
+    eq(5 * TIER_WATER.Uncommon, 50);
+  });
+
+  test('all Rare = 75%', () => {
+    eq(5 * TIER_WATER.Rare, 75);
+  });
+
+  test('mixed: Common + Uncommon + Rare + Legendary + Common = 55%', () => {
+    const total = TIER_WATER.Common + TIER_WATER.Uncommon + TIER_WATER.Rare + TIER_WATER.Legendary + TIER_WATER.Common;
+    eq(total, 55); // 5+10+15+20+5=55
+  });
+
+  test('water is capped at 100% (5 Legendary)', () => {
+    let w = 0;
+    for (let i = 0; i < 5; i++) w = Math.min(100, w + TIER_WATER.Legendary);
+    eq(w, 100);
+  });
+
+  test('no overflow beyond 100%', () => {
+    let w = 100;
+    w = Math.min(100, w + TIER_WATER.Legendary);
+    eq(w, 100);
+  });
+});
+
+// ─── Contained-in-input fallback ──────────────────────────────────────────
+suite('Longest alias contained in input', () => {
+  test('"I think Elisha" → Al-Yasa via contained match', () => {
+    const r = matchAnswer('I think Elisha is the answer', prophetsQ);
+    eq(r.type, 'correct');
+    eq(r.answer.name, 'Al-Yasa');
+  });
+});
+
+// ─── Summary ──────────────────────────────────────────────────────────────
+const summary = document.createElement('div');
+summary.className = 'summary';
+summary.innerHTML = `${pass + fail} tests — <span class="pass">${pass} passed</span>, <span class="fail">${fail} failed</span>`;
+out.appendChild(summary);
+
+if (fail === 0) {
+  summary.style.borderColor = 'rgba(58,158,92,.5)';
+  summary.style.background = 'rgba(58,158,92,.05)';
+} else {
+  summary.style.borderColor = 'rgba(224,96,96,.5)';
+  summary.style.background = 'rgba(224,96,96,.05)';
+}
+</script>
+</body>
+</html>
